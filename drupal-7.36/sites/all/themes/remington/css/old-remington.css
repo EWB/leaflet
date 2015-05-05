@@ -1,0 +1,273 @@
+@charset "UTF-8";
+/* CSS Document */
+
+
+#remington-item div.field-field-image .field-items .field-item {
+    display: inline;
+    float: left;
+    padding: 3px;
+}
+.pane-field-transcript .pane-content {
+	border: 2px groove threedface;
+    display: block;
+    margin-left: 2px;
+    margin-right: 2px;
+	padding: 0 10px 2px 10px;
+	
+}
+
+#content-area {
+	margin-right:35px;
+	
+	
+}
+
+#logo {
+	
+	
+}
+
+/******* ewb menu styling *************/
+
+#header {
+	/*border-top-width: 4px;
+	border-top-style: solid;
+	border-top-color: #868D4A;	*/
+	
+}
+
+#header div.block-menu  {
+	padding-top: 115px;	
+	
+}
+
+
+#header div.block-menu ul.menu {
+	/*background-color: #069;*/
+	/*background-color: #376099;*/
+	/*background-color: #1C4979;*/
+	background-color: #555341;
+	border-top: 1px solid #E9E7D6;
+	margin: 0;
+	padding: 5px 20px;
+}
+#header div.block-menu ul.menu li {
+    list-style: none outside none;
+	padding:0 0 0 12px;
+}
+#header div.block-menu ul.menu li {
+    display: inline;
+    list-style: none outside none;
+    margin-left: -5px;
+	
+}
+#header div.block-menu ul.menu {
+    
+	border-bottom: 5px solid #868D4A;
+    margin: 0;
+}
+#header div.block-menu ul.menu li a {
+    border-right: 1px solid #E9E7D6;
+    color: #E9E7D6;
+    padding: 5px 20px;
+    text-decoration: none;
+}
+
+/************************/
+
+
+#transcript-disclaimer  {
+	font-size: small;
+	font-style: italic;	
+}
+.pane-field-transcript  h3 {
+	color:#333;
+	font-weight:bold;
+	font-size:1.1em;
+	
+}
+
+body  {
+	background-color:#000;
+	color:#fff;
+}
+#page-wrapper {
+	background-color:#272727;
+	border-top-width: 6px;
+	border-right-width: 2px;
+	border-bottom-width: 2px;
+	border-left-width: 2px;
+	border-top-style: solid;
+	border-right-style: solid;
+	border-bottom-style: solid;
+	border-left-style: solid;
+	border-top-color: #868D4A;
+	border-right-color: #585754;
+	border-bottom-color: #585754;
+	border-left-color: #585754;	
+}
+#main  {
+	padding: 0 12px 0 12px;	
+	
+}
+#main-wrapper {
+	
+	
+}
+	
+	
+
+
+#footer {
+	border-top-width: thin;
+	border-top-style: double;
+	border-top-color: #333;	
+	background-color:#666;
+	font-size:.8em;
+    color: #FFFFFF;
+    font-size: 0.8em;
+    padding: 12px 20px 10px 80px;
+    text-align: center;
+	
+	
+}
+
+
+.page-collections-frederic-remington-collection .title  {
+	display:none;	
+	
+
+}
+	
+
+
+/*********** ewb common changes *******************/
+
+#page-outer #primary {
+    float: right;
+}
+#page-outer {
+    background: url("../images/primary-bg.png") repeat-x scroll 0 0 transparent;
+    height: 32px;
+    padding: 11px 15px 20px;
+}
+ #page-outer a:first-child
+ {
+ }
+ #page-outer #primary
+ {
+   float: right;
+ }
+ #page-outer a
+ {
+   text-decoration: none;
+     color:#e9e7d6;
+ }
+ #page-outer a:hover
+ {
+   text-decoration: underline;
+     color:#fff;
+ }
+ #page-outer ul.links {
+    margin: 0;
+    padding: 0;
+}
+ #page-outer ul.links li {
+    display: inline;
+    list-style-type: none;
+    padding: 0 0.5em;
+}
+
+
+#header div#block-search-0 {
+   	padding-top:4px;
+	padding-right:32px;
+    z-index: 100;
+}
+#block-search-0 h2{
+		
+	display:none;
+	
+}
+#block-search-0 {
+    color: #CCCCCC;
+    float: right;
+    padding-right: 9px;
+    padding-top:3px;
+}
+.with-navigation #content, .with-navigation .region-sidebar-first, .with-navigation .region-sidebar-second {
+    margin-top: 0em;
+}
+.page-collections-frederic-remington-collection-browse ul.primary li a .tab  {
+	display:none;
+
+}
+.page-collections-frederic-remington-collection-browse ul.primary li a  {
+	display:none;
+
+} 
+
+#content-area  {
+	min-height:600px;	
+	
+	
+}
+
+
+ .views-field-field-image-fid  {
+	
+	padding:28px 40px 6px 40px;
+	
+}
+
+.view-remington-browse  {
+	padding-bottom:120px;
+	
+	
+}
+
+
+
+.view-remington-browse .views-field-title a {
+	
+	
+	/*color:#0066CC;*/
+	color:#FC3;
+	text-decoration:none;
+	
+}
+
+.view-remington-browse  .views-field-field-source-folder-value {
+	padding-left:40px;
+	
+}
+.view-remington-browse .views-field-title   {
+	padding-left:40px;
+	width:170px;
+	
+}
+
+a:hover {
+	
+	
+}
+a:visited, a:link  {
+	
+	color:#FC3;
+	
+}
+
+
+#remington-front-info-browse  {
+	
+	padding-left:60px;
+	
+}
+
+#remington-front-info  {
+	font-size:.8em;
+	padding:12px;
+	margin:22px;
+	border: 1px solid #CCC;	
+	
+}

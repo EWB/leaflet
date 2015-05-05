@@ -1,0 +1,4 @@
+; $ID$
+name = Digital Collection
+description = "Digital Collection glue module"
+core = 6.x

@@ -1,0 +1,7 @@
+
+#mapbox-configs-wrapper .map-config .form-type-textfield,
+#mapbox-configs-wrapper .map-config .form-type-textarea {
+  display: inline-table;
+  margin-right: 1.5em;
+  max-width: 23%;
+}

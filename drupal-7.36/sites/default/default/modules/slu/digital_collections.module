@@ -1,0 +1,173 @@
+<?php
+
+function digital_collections_init() {
+  $path = drupal_get_path('module', 'digital_collections'); 
+  $js_file = $path .'/digital_collections.js';
+  drupal_add_js($js_file, 'module');
+  $css_file = $path .'/digital_collections.css';
+  drupal_add_css($css_file, 'module');
+}
+
+function digital_collections_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_state['post']) {
+    switch ($form_id) {
+    case 'search_block_form':
+
+      $collection = array_shift(taxonomy_get_term_by_name(_digital_collections_get_collection()));
+      // pass the blog type as a hidden value, this will get picked up as a facet
+      $form['category'] = array(
+        '#type' => 'hidden',
+        '#value' => $collection->tid,
+      );
+      break;
+    case 'search_form':
+      break;
+    default:
+      //dsm($form_id, 'Form_id');
+    }
+  }
+}
+
+/**
+ * Figure out collection from URL
+ */
+function _digital_collections_get_collection() {
+  //global $base_url;
+  $args = explode('/', $_SERVER['REQUEST_URI']);
+  return str_replace('-', ' ', $args[2]);
+}
+
+/**
+ * Support function to look up collections vid - caches results to reduce DB access
+ */
+function _digital_collections_get_collections_vid() {
+  // Lookup & store the colleciton vid for hiding
+  static $collection_vid;
+  if (!$collection_vid) {
+    // Only loading once, so might as well load them all
+    $vocabs = taxonomy_get_vocabularies();
+    foreach($vocabs as $vocab) {
+      if ($vocab->name == 'Collection') {
+        $collection_vid = $vocab->vid;
+        break;
+      }
+    }
+  }
+  return $collection_vid;
+}
+
+/**
+ * hook_term_path provides a path for each term
+ *
+ * For each vocab that the DC module is manually put into the module field in the vocabulary
+ * table will use this hook to form href's for terms
+ */
+function digital_collections_term_path($term) {
+  if ($term->vid != _digital_collections_get_collections_vid()) {
+    return 'collections/'. strtolower(str_replace(' ', '-', _digital_collections_get_collection())) .'/keywords/'. $term->name;
+  } else {
+    return 'collections/'. strtolower(str_replace(' ', '-', $term->name));
+  }
+}
+
+/**
+ * Used to alter term links to forward to view instead of term listing
+ */
+function digital_collections_link_alter(&$links, $node) {
+  if ($links) {
+    $collection_vid = _digital_collections_get_collections_vid();
+    $tax_tid = null;
+    
+    // First run through to build a vid indexed list
+    foreach ($links as $module => $link) {
+      if (strstr($module, 'taxonomy_term')) {
+        $tid = substr($module, 14);
+        $tax_tid[($node->taxonomy[$tid]->vid)][$tid] = $module;
+      }
+    }
+
+    // Now run through again & fix links
+    if ($tax_tid) {
+      // Get collection title
+      $collection_vid_key = array_shift($tax_tid[$collection_vid]); 
+      $collection_title = strtolower(strtr($links[$collection_vid_key]['title'], ' ', '-')); 
+      // and unset collections term
+      unset($links[$collection_vid_key]);
+      foreach ($tax_tid as $vid => $modules) {
+        //if ($modules && is_array($modules)) {
+        if ($modules) {
+          foreach ($modules as $tid => $key) {
+            if ($vid != $collection_vid) {
+              $links[$key]['href'] = 'collections/'. $collection_title .'/keywords/'. $links[$key]['title'];
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+/**
+ * theme function that renders the HTML for the tags
+ * @ingroup themable
+ */
+function phptemplate_tagadelic_weighted($terms) {
+  $output = '';
+
+  // Regardless of the path alias, the first arg will be node for a node
+  if (arg(0) == 'node') {
+    // Make up collection term & link stub if we are on a node
+    $node = node_load(arg(1));
+    $collection_term = array_shift(taxonomy_node_get_terms($node));
+    $link_stub = 'collections/'. strtolower(strtr($collection_term->name, ' ', '-')) .'/keywords/';
+  } elseif (arg(1) == '*') {
+    // EWB's view pane more link pointed to * for the destination
+    // it would need special handling if he comes up with a useful destinaiton
+    // for a more link
+  } else {
+    // Not sure about other cases, but...
+    $link_stub = 'collections/'. arg(1) .'/keywords/';
+  }
+  foreach ($terms as $term) {
+    //$output .= l($term->name, taxonomy_term_path($term), array('attributes' => array('class' => "tagadelic level$term->weight", 'rel' => 'tag'))) ." \n";
+    $output .= l($term->name, $link_stub . strtolower($term->name), array('attributes' => array('class' => "tagadelic level$term->weight", 'rel' => 'tag'))) ." \n";
+  }
+  return $output;
+}
+
+/*
+function digital_collections_link($type, &$object, $teaser=false) {
+  // Should cache for any scenarios where this is called multiple times
+  if ($object->taxonomy) {
+    static $vocabs;
+    static $collection_vid;
+    if (!$vocabs) {
+      // Only loading once, so might as well load them all
+      $vocabs = taxonomy_get_vocabularies();
+      foreach($vocabs as $vocab) {
+        if ($vocab->name == 'Collection') {
+          $collection_vid = $vocab->vid;
+          break;
+        }
+      }
+    }
+
+    // Build the new links
+    $path = 'taxonomy/term/';
+    $links = array();
+    foreach($object->taxonomy as $term) {
+      if ($term->vid <> $collection_vid) {
+        $links[] = array(
+          'title' => $term->name,
+          'href' => $path . $term->name,
+        );
+      }
+    }
+    //dsm($links);
+    if ($links) {
+      unset($object->taxonomy);
+      return $links;
+    }
+  }
+}
+*/

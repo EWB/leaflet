@@ -1,0 +1,153 @@
+<?php
+/**
+ * @file reference_views.module
+ * Adds a view display which acts as a display formatter for CCK node- and
+ * user- reference fields.
+ * The first view argument must be a node or user id accordingly, set to allow
+ * multiple ids.
+ */
+
+/**
+ * Implementation of hook_help().
+ */
+function reference_views_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#reference_views':
+      return t("The Node reference views module adds a display option called 'View' to all node reference CCK fields. To use this, you need a 'Field formatter' display to a view. This display needs its first argument to be a node ID, set to accept multiple values.<br />" .
+      "To get started, you can clone the example view: it comes with the argument already set. No other arguments are passed to the view. You can add any fields and sorts; however, CCK does not provide a sort for its field item order.");
+  }
+}
+
+/**
+ * Implementation of hook_field_formatter_info().
+ *
+ * We return formatters with id keys of the form:
+ *  views_VIEWNAME_DISPLAYID
+ */
+function reference_views_field_formatter_info() {
+  $formatters = array();
+  $views = views_get_all_views();
+  foreach ($views as $view) {
+    // Disabled views get nothing.
+    if (!empty($view->disabled)) {
+      continue;
+    }
+
+    $view->init_display();
+    foreach ($view->display as $display_id => $display) {
+
+      if (isset($display->handler) && !empty($display->handler->definition['uses hook field_formatter_info'])) {
+        $result = $display->handler->execute_hook_field_formatter_info();
+        if (is_array($result)) {
+          $formatters = array_merge($formatters, $result);
+        }
+      }
+    }
+  }
+
+  //dsm($formatters, 'hook');
+  return $formatters;
+
+  /*
+  // TODO: ARGH!
+  if (module_exists('content_multigroup')) {
+    $formatters['views_single'] = array(
+      'label' => t('View (for multigroups)'),
+      'field types' => array('nodereference'),
+      'multiple values' => CONTENT_HANDLE_CORE,
+    );
+  }
+  return $formatters;
+  */
+}
+
+
+/**
+ * Implementation of hook_theme().
+ */
+function reference_views_theme($existing, $type, $theme, $path) {
+  $theme = array();
+
+  $formatters = reference_views_field_formatter_info();
+  foreach ($formatters as $formatter_id => $formatter) {
+    // $formatter_id is of the form: views_VIEWNAME_DISPLAYID
+    $theme_key = 'reference_views_formatter_' . $formatter_id;
+    $theme[$theme_key] = array(
+      'arguments' => array('element' => NULL),
+      // Use a common theme function for all our formatters.
+      'function' => 'theme_reference_views_formatter',
+    );
+  }
+
+  return $theme;
+}
+
+
+/**
+ * Formatter theme function.
+ *
+ * This handles all our formatters. The particular view name and display id
+ * are retrieved from the formatter settings.
+ * The view is given arguments of:
+ *  - the node ids that the CCK field gives us
+ *  - the node id of the currently displayed node
+ * A view used as a formatter should therefore have arguments:
+ *  - node:nid
+ *  - global:null (or no second argument)
+ */
+function theme_reference_views_formatter($element) {
+  $field = content_fields($element['#field_name']);
+  switch ($field['type']) {
+    case 'nodereference':
+      $element_type = 'nid';
+      break;
+    case 'userreference':
+      $element_type = 'uid';
+      break;
+  }
+
+  // We get here even if the field is empty, so check that the value is not a proper nid
+  // and return nothing so the label is not shown.
+  if (!$element[0]['#item'][$element_type]) {
+    return;
+  }
+
+  // We go round the houses to get the extra arguments we stashed in the
+  // formatter settings.
+  // All this because theme functions don't get default arguments;
+  // see http://drupal.org/node/1190132
+  $field = content_fields($element['#field_name']);
+  $formatter = _content_get_formatter($element['#formatter'], $field['type']);
+
+  $view_name  = $formatter['extra arguments']['view'];
+  $display_id = $formatter['extra arguments']['display'];
+
+  // Build the arguments to pass to the view.
+  foreach (element_children($element) as $key) {
+    $item_ids[] = $element[$key]['#item'][$element_type];
+  }
+  // Filter out NULL values from gappy fields: see http://drupal.org/node/422036
+  $arg_ids = implode(',', array_filter($item_ids));
+
+  $args[]     = $arg_ids;
+  $args[]     = $element['#node']->{$element_type};
+
+  // Don't use views_embed_view so we can return an error if the view can't be found.
+  $view = views_get_view($view_name);
+  if (!$view) {
+    return "Error: view $view_name not found.";
+  }
+
+  return $view->preview($display_id, $args);
+}
+
+/**
+ * Implementation of hook_views_api().
+ */
+function reference_views_views_api() {
+  return array(
+    'api' => 2,
+    'path' => drupal_get_path('module', 'reference_views'),
+  );
+}
+

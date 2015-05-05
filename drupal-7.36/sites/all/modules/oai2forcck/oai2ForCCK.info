@@ -1,0 +1,14 @@
+name = "OAI2 for CCK"
+description = "This module provides access to the protocol OAI-PMH 2.0 to the CCK fields for content type"
+dependencies[] = content
+core = "6.x"
+
+
+
+
+; Information added by drupal.org packaging script on 2011-04-11
+version = "6.x-1.0-beta2"
+core = "6.x"
+project = "oai2forcck"
+datestamp = "1302535629"
+

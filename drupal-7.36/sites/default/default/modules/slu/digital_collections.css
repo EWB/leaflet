@@ -1,0 +1,47 @@
+
+div.node-type-journal-content .field-field-page-image div.field-items .field-item
+{
+  float: left;
+  margin: 10px;
+  margin-left: 0;
+}
+div.node-type-journal-content .field-field-page-image div.field-items .field-item:first-child
+{
+ /* margin-left: 10px;*/
+}
+div.node-type-journal-content div.content fieldset.fieldgroup
+{
+  clear: left;
+}
+
+.search-results .search-info {
+display: none;
+}
+
+/**
+ * Right & left cck images
+ */
+div.group-right-photo 
+{
+  float: right;
+  padding-right: 1em;
+  width: 375px;
+}
+div.group-left-photo 
+{
+  float: left;
+  width: 375px;
+  clear: right;
+  padding: 1em 1em 0 0;
+}
+div.group-left-photo div.content
+{
+  padding-left: 0;
+}
+div.group-left-photo div.content,
+div.group-right-photo div.content
+{
+  font-style: italic;
+  color: #fff;
+  font-size: .85em;
+}

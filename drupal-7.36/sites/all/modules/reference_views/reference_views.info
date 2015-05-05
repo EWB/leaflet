@@ -1,0 +1,12 @@
+name = Reference views
+description = Provides a display formatter for node and user reference fields using a view.
+package = CCK
+dependencies[] = views
+dependencies[] = content
+core = 6.x
+; Information added by drupal.org packaging script on 2011-10-22
+version = "6.x-2.1"
+core = "6.x"
+project = "reference_views"
+datestamp = "1319272835"
+
